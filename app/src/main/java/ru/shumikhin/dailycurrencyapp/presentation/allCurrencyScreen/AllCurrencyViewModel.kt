@@ -3,6 +3,11 @@ package ru.shumikhin.dailycurrencyapp.presentation.allCurrencyScreen
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -16,9 +21,12 @@ import javax.inject.Inject
 class AllCurrencyViewModel @Inject constructor(
     private val getAllCurrencyUseCase: GetAllCurrencyUseCase,
 ) : ViewModel() {
+
     private val _state: MutableStateFlow<State> = MutableStateFlow(State.Default)
     val state = _state.asStateFlow()
 
+    private var isUpdating = true
+    private val backgroundScope = CoroutineScope(context = Dispatchers.IO)
     init {
         viewModelScope.launch {
             getAllCurrencyUseCase().collect {
@@ -27,15 +35,13 @@ class AllCurrencyViewModel @Inject constructor(
         }
     }
 
-    fun reloadValute(){
+    fun reloadValute() {
+        isUpdating = true
+        backgroundScope.coroutineContext.cancelChildren()
         viewModelScope.launch {
-            getAllCurrencyUseCase().collect {
-                _state.value = it.toState()
-            }
+            autoUpdateCurrency()
         }
     }
-
-    private var isUpdating = true
 
     fun stopUpdating() {
         isUpdating = false
@@ -46,13 +52,14 @@ class AllCurrencyViewModel @Inject constructor(
     }
 
     suspend fun autoUpdateCurrency() {
-        while (isUpdating) {
-            getAllCurrencyUseCase().collect {
-                _state.value = it.toState()
+        backgroundScope.launch {
+            while (isUpdating) {
+                getAllCurrencyUseCase().collect {
+                    _state.value = it.toState()
+                }
+                delay(30000)
             }
-            delay(30000)
         }
-
     }
 
 }
@@ -60,14 +67,14 @@ class AllCurrencyViewModel @Inject constructor(
 
 sealed class State {
     data object Default : State()
-    class Error(val message: String) : State()
+    class Error(val error: Throwable) : State()
     class Success(val currencyRates: CurrencyRates) : State()
     data object Loading : State()
 }
 
 private fun RequestResult<CurrencyRates>.toState(): State {
     return when (this) {
-        is RequestResult.Error -> State.Error(error)
+        is RequestResult.Error -> State.Error(this.error)
         is RequestResult.Loading -> State.Loading
         is RequestResult.Success -> State.Success(data)
     }

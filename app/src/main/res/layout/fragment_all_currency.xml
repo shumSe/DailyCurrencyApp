@@ -26,14 +26,16 @@
 
             <TextView
                 android:id="@+id/tv_error_message"
-                style="@style/Title"
+                style="@style/Body"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:text="@string/load_error"
                 android:textAllCaps="true"
                 android:textSize="16.dp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:layout_marginBottom="5.dp"
+                />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_retry_load_valutes"

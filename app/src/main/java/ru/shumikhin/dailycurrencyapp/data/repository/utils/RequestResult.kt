@@ -1,17 +1,16 @@
 package ru.shumikhin.dailycurrencyapp.data.repository.utils
 
-import java.net.SocketTimeoutException
-import java.net.UnknownHostException
+import java.io.IOException
 
 sealed class RequestResult<out E : Any> {
     data object Loading : RequestResult<Nothing>()
     class Success<out E : Any>(val data: E) : RequestResult<E>()
-    class Error(val error: String) : RequestResult<Nothing>()
+    class Error(val error: Throwable) : RequestResult<Nothing>()
 }
 fun <T : Any> Result<T>.toRequestResult(): RequestResult<T> {
     return when {
         isSuccess -> RequestResult.Success(data = this.getOrThrow())
-        isFailure -> RequestResult.Error(error = this.exceptionOrNull().errorToMessage())
+        isFailure -> RequestResult.Error(error = this.exceptionOrNull() ?: IOException())
         else -> error("Impossible branch")
     }
 }
@@ -24,11 +23,4 @@ fun <I : Any, O : Any> RequestResult<I>.map(mapper: (I) -> O): RequestResult<O> 
     }
 }
 
-fun Throwable?.errorToMessage() : String{
-    return when(this){
-        is SocketTimeoutException -> "Connection Timeout"
-        is UnknownHostException -> "No Internet Connection"
-        else -> "Bad Request"
-    }
-}
 

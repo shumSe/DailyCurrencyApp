@@ -13,6 +13,7 @@ import ru.shumikhin.dailycurrencyapp.data.models.CurrencyRates
 import ru.shumikhin.dailycurrencyapp.data.models.Valute
 import ru.shumikhin.dailycurrencyapp.data.repository.utils.RequestResult
 import ru.shumikhin.dailycurrencyapp.data.repository.utils.map
+import ru.shumikhin.dailycurrencyapp.data.repository.utils.toCurrencyRates
 import ru.shumikhin.dailycurrencyapp.data.repository.utils.toRequestResult
 import ru.shumikhin.dailycurrencyapp.domain.repository.DailyCurrencyRepository
 import java.text.SimpleDateFormat
@@ -36,23 +37,4 @@ class DailyCurrencyRepositoryImpl @Inject constructor(
     }
 }
 
-private fun CurrencyRatesDto.toCurrencyRates(): CurrencyRates {
-    return CurrencyRates(
-        updateTime = getCurrentTime(),
-        valute = valute.values.map { valuteDto ->
-            Valute(
-                id = valuteDto.id,
-                charCode = valuteDto.charCode,
-                nominal = valuteDto.nominal,
-                name = valuteDto.name,
-                value = String.format("%.2f", valuteDto.value).toDouble(),
-                previous = valuteDto.previous,
-            )
-        }
-    )
-}
 
-private fun getCurrentTime(): String{
-    val sdf = SimpleDateFormat("dd/M/yyyy hh:mm:ss")
-    return sdf.format(Calendar.getInstance().time)
-}

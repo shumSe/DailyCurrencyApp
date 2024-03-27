@@ -10,4 +10,8 @@
     <string name="retry_loading">Перезагрузить</string>
     <string name="load_error">Ошибка загрузки</string>
     <string name="update_error">Ошибка обновления</string>
+
+    <string name="connection_timeout_error">Время подключения истекло</string>
+    <string name="no_internet_error">Нет подключения к интернету</string>
+    <string name="bad_request_error">Неизвестная ошибка</string>
 </resources>

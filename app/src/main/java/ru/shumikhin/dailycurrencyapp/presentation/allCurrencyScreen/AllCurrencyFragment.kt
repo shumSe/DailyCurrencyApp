@@ -1,6 +1,6 @@
 package ru.shumikhin.dailycurrencyapp.presentation.allCurrencyScreen
 
-import android.graphics.Color
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -22,6 +22,8 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import ru.shumikhin.dailycurrencyapp.R
 import ru.shumikhin.dailycurrencyapp.databinding.FragmentAllCurrencyBinding
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 
 @AndroidEntryPoint
 class AllCurrencyFragment : Fragment() {
@@ -40,6 +42,7 @@ class AllCurrencyFragment : Fragment() {
 
     private lateinit var tvLastUpdateTime: TextView
     private lateinit var tvLastUpdateTimeTitle: TextView
+    private lateinit var tvErrorMessage: TextView
 
     private var textDefaultColor: Int = 0
 
@@ -99,8 +102,10 @@ class AllCurrencyFragment : Fragment() {
 
                         is State.Error -> {
                             if (valuteAdapter.currentList().isEmpty()) {
-                                showFullScreenError()
-                            }else{
+                                showFullScreenError(
+                                    state.error.errorToMessage(requireContext())
+                                )
+                            } else {
                                 showTitleError()
                             }
                             allCurrencyViewModel.stopUpdating()
@@ -125,16 +130,29 @@ class AllCurrencyFragment : Fragment() {
     }
 
 
-    private fun showFullScreenError() {
+    private fun showFullScreenError(
+        errorMessage: String
+    ) {
+        tvErrorMessage.text = errorMessage
         errorContainer.visibility = View.VISIBLE
         contentContainer.visibility = View.GONE
         progressBar.visibility = View.GONE
     }
 
-    private fun showTitleError(){
+    private fun showTitleError() {
         tvLastUpdateTimeTitle.text = resources.getText(R.string.update_error)
-        tvLastUpdateTimeTitle.setTextColor(ContextCompat.getColor(requireContext(), R.color.error_container_bg))
-        tvLastUpdateTime.setTextColor(ContextCompat.getColor(requireContext(), R.color.error_container_bg))
+        tvLastUpdateTimeTitle.setTextColor(
+            ContextCompat.getColor(
+                requireContext(),
+                R.color.error_container_bg
+            )
+        )
+        tvLastUpdateTime.setTextColor(
+            ContextCompat.getColor(
+                requireContext(),
+                R.color.error_container_bg
+            )
+        )
     }
 
     private fun showLoading() {
@@ -164,6 +182,8 @@ class AllCurrencyFragment : Fragment() {
         tvLastUpdateTime = binding.tvLastUpdateTime
         tvLastUpdateTimeTitle = binding.tvLastUpdateTimeTitle
 
+        tvErrorMessage = binding.tvErrorMessage
+
         textDefaultColor = tvLastUpdateTime.textColors.defaultColor
 
         progressBar = binding.progressBar
@@ -183,5 +203,12 @@ class AllCurrencyFragment : Fragment() {
         valuteRecyclerView.layoutManager = layoutManager
     }
 
+    private fun Throwable?.errorToMessage(context: Context): String {
+        return when (this) {
+            is SocketTimeoutException -> context.getString(R.string.connection_timeout_error)
+            is UnknownHostException -> context.getString(R.string.no_internet_error)
+            else -> context.getString(R.string.bad_request_error)
+        }
+    }
 }
 
