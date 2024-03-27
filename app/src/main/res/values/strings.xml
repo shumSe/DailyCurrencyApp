@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">DailyCurrencyApp</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="last_update_time">Обновлено:</string>
+    <string name="valute_char_code">Код</string>
+    <string name="valute_title">Валюта</string>
+    <string name="valute_nominal">Единиц</string>
+    <string name="valute_rate">Курс</string>
+    <string name="retry_loading">Перезагрузить</string>
+    <string name="load_error">Ошибка загрузки</string>
+    <string name="update_error">Ошибка обновления</string>
+</resources>

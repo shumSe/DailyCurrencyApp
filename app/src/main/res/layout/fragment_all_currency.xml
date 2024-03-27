@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.swiperefreshlayout.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/swipe_refresh_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ProgressBar
+            android:id="@+id/progress_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:visibility="gone" />
+
+        <LinearLayout
+            android:id="@+id/container_error"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/tv_error_message"
+                style="@style/Title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/load_error"
+                android:textAllCaps="true"
+                android:textSize="16.dp"
+                android:textStyle="bold" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_retry_load_valutes"
+                style="@style/Button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:backgroundTint="@color/error_container_bg"
+                android:text="@string/retry_loading"
+                android:textAllCaps="true"
+                app:cornerRadius="10.dp" />
+
+        </LinearLayout>
+
+        <LinearLayout xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/layout_currency_rates"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:paddingHorizontal="10.dp"
+            android:paddingTop="10.dp"
+            tools:context=".presentation.allCurrencyScreen.AllCurrencyFragment">
+
+            <LinearLayout
+                android:id="@+id/container_last_update_time"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/tv_last_update_time_title"
+                    style="@style/Title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="10.dp"
+                    android:text="@string/last_update_time" />
+
+                <TextView
+                    android:id="@+id/tv_last_update_time"
+                    style="@style/Body"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textStyle="italic" />
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="10">
+
+                <TextView
+                    style="@style/Body"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="5.dp"
+                    android:layout_weight="1"
+                    android:text="@string/valute_char_code" />
+
+                <TextView
+                    style="@style/Body"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="6"
+                    android:text="@string/valute_title" />
+
+                <TextView
+                    style="@style/Body"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1.5"
+                    android:text="@string/valute_nominal" />
+
+                <TextView
+                    style="@style/Body"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1.5"
+                    android:text="@string/valute_rate"
+                    android:textAlignment="center" />
+            </LinearLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rw_valute_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clipToPadding="false"
+                android:paddingTop="5.dp"
+                android:paddingBottom="10.dp" />
+        </LinearLayout>
+
+    </FrameLayout>
+</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
